@@ -1,0 +1,19 @@
+openapi: 3.0.3
+info:
+  title: 'Dorm API Documentation'
+  description: 'Welcome to the API documentation for the Dorm app, powered by Laravel PHP.'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths: []
+tags: []
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve a token by sending a login request via postman and copying the <b>generated API token</b>.'
+security:
+  -
+    default: []

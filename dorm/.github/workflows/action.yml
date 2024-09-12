@@ -1,0 +1,74 @@
+name: Deploy to FTP Server
+
+# Trigger the workflow on push or pull request to main or develop branch
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # Job name
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'  # Adjust to the PHP version you're using
+          extensions: mbstring, pdo, dom, bcmath, gd, fileinfo, curl
+          ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
+          coverage: none
+
+      # Step 3: Cache composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      # Step 4: Install dependencies using Composer
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+      # Step 5: Generate application key
+      - name: Generate application key
+        run: php artisan key:generate
+
+      # Step 6: Create environment file for testing
+      - name: Create .env file
+        run: cp .env.example .env
+
+      # Step 7: Run Laravel migrations (if needed)
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      # Step 8: Deploy to FTP server
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.2
+        with:
+          server: ${{ secrets.FTP_HOST }}           # FTP host from GitHub Secrets
+          username: ${{ secrets.FTP_USERNAME }}     # FTP username from GitHub Secrets
+          password: ${{ secrets.FTP_PASSWORD }}     # FTP password from GitHub Secrets
+          port: ${{ secrets.FTP_PORT }}             # FTP port from GitHub Secrets (default is 21)
+          protocol: ftps                            # Use FTPS for secure transfer (you can change to ftp if needed)
+          local-dir: ./                             # Directory in repository to upload
+          server-dir: ${{ secrets.FTP_DEPLOY_PATH }} # Remote server directory
+          dangerous-clean-slate: true               # Clear the directory before deploying (optional)
+
+      # Optional Step: Run PHP code sniffer for linting (uncomment if needed)
+      # - name: Run PHP CS Fixer
+      #   run: |
+      #     composer global require friendsofphp/php-cs-fixer
+      #     ~/.composer/vendor/bin/php-cs-fixer fix --dry-run --verbose
