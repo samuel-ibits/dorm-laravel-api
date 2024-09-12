@@ -25,7 +25,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3.6'  # Adjust to the PHP version you're using
+          php-version: '8.3'  # Adjust to the PHP version you're using
           extensions: mbstring, pdo, dom, bcmath, gd, fileinfo, curl
           ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
           coverage: none
@@ -66,9 +66,3 @@ jobs:
           local-dir: ./                             # Directory in repository to upload
           server-dir: ${{ secrets.FTP_DEPLOY_PATH }} # Remote server directory
           dangerous-clean-slate: true               # Clear the directory before deploying (optional)
-
-      # Optional Step: Run PHP code sniffer for linting (uncomment if needed)
-      # - name: Run PHP CS Fixer
-      #   run: |
-      #     composer global require friendsofphp/php-cs-fixer
-      #     ~/.composer/vendor/bin/php-cs-fixer fix --dry-run --verbose
