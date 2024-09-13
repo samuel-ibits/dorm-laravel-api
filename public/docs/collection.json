@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Dorm API Documentation",
-        "_postman_id": "a04185ff-62b9-4f23-8d51-b5c249834458",
+        "_postman_id": "82ac84ec-d55f-4d1a-aa04-d34f60760cb8",
         "description": "Welcome to the API documentation for the Dorm app, powered by Laravel PHP.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
