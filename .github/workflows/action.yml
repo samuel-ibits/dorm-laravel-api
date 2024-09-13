@@ -29,6 +29,9 @@ jobs:
           extensions: mbstring, pdo, dom, bcmath, gd, fileinfo, curl
           ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
           coverage: none
+ # Step 6: Create environment file for testing
+      - name: Create .env file
+        run: cp .env.example .env
 
       # Step 3: Cache composer dependencies
       - name: Cache Composer dependencies
@@ -46,9 +49,6 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      # Step 6: Create environment file for testing
-      - name: Create .env file
-        run: cp .env.example .env
 
       # Step 7: Run Laravel migrations (if needed)
       - name: Run migrations
